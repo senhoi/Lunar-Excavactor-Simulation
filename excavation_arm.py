@@ -2,6 +2,7 @@ from math import *
 from scipy.integrate import solve_ivp
 import numpy as np
 import matplotlib.pyplot as plt
+from excavation_force import ExcForce
 
 class ExcArm(object):
     def __init__(self):
@@ -34,6 +35,15 @@ class ExcArm(object):
     def eval_input_excavation_force(self, t, x):
         theta = x[0]
         omega = x[1]
+
+        deg = theta / pi * 180
+        if deg > 0:
+            deg -= deg // 360 * 360
+        else:
+            deg -= deg // -360 * -360
+
+        model = ExcForce('config/param_moon.json', '#1')
+        # tx, ty = model.SwickPerumpralModel()
         return 0, 0
 
     def eval_input_motor(self, t, x):
@@ -49,7 +59,15 @@ if __name__ == '__main__':
     sol = arm.integrate()
     t = np.linspace(0, 300, 3000)
     z = sol.sol(t)
-    plt.plot(t, z.T[:,[1]])
+    pos = []
+    for rad in z.T[:,[0]]:
+        deg = rad / pi *180
+        if deg > 0:
+            pos.append(deg - deg // 360 * 360)
+        else:
+            pos.append(deg - deg // -360 * -360)
+
+    plt.plot(t, pos)
     plt.xlabel('t')
     plt.legend(['theta', 'omega'], shadow=True)
     plt.title('Excavation System')
