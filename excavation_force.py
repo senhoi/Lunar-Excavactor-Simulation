@@ -18,10 +18,6 @@ Reference:
 """
 from math import *
 import json
-import numpy as np
-from scipy.integrate import solve_ivp
-import matplotlib
-import matplotlib.pyplot as plt
 
 
 class ExcForce(object):
