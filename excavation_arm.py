@@ -52,13 +52,14 @@ class ExcArm(object):
         return self.Tm_max if omega >= 0 else -self.Tm_max
 
     def integrate(self):
-        return solve_ivp(self.eval_rhs, [0, 300], [pi/2, 0], args=[self.eval_input_excavation_force, self.eval_input_motor], dense_output=True)
+        return solve_ivp(self.eval_rhs, [0, 300], [pi/2, 0], method='DOP853', args=[self.eval_input_excavation_force, self.eval_input_motor], dense_output=True)
 
 if __name__ == '__main__':
     arm = ExcArm()
     sol = arm.integrate()
     t = np.linspace(0, 300, 3000)
     z = sol.sol(t)
+    # plt.plot(t, z.T)
     pos = []
     for rad in z.T[:,[0]]:
         deg = rad / pi *180
